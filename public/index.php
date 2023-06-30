@@ -33,7 +33,7 @@ $app->addErrorMiddleware(true, true, true);
 
 
 $app->get('/', function ($request, $response, $args) {
-    $params = ['flash' => []];
+    $params = ['flash' => [], 'url' => ''];
     return $this->get('renderer')->render($response, 'index.html', $params);
 });
 
