@@ -48,6 +48,10 @@ $app->post('/urls', function ($request, $response, $args) {
         $normalUrl = implode( '',[$parseUrl['scheme'], '://', $parseUrl['host']]);
         try {
             $pdo =Connection::get()->connect();
+            $newSelect = new Select($pdo);
+            $select = $newSelect->selectSql("SELECT * FROM urls WHERE name = {$normalUrl} LIMIT 1");
+            var_dump($select);
+            exit;
             $newInsert = new Insert($pdo);
             $insert = $newInsert->insertLabel($normalUrl, $time);
         } catch (\PDOException $e) {
