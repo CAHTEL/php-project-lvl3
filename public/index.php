@@ -68,7 +68,7 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) {
     try {
         $pdo =Connection::get()->connect();
         $selectId = new Select($pdo);
-        $url = $selectId->selectId($url_id)['0'];
+        $url = $selectId->selectSql("SELECT * FROM urls WHERE id = {$url_id}")[0];
         $document = new Document($url['name'], true);
         $h1 = optional($document->first('h1'))->text();
         $title = optional($document->first('title'))->text();
@@ -83,6 +83,7 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) {
     } catch (\PDOException $e) {
         echo $e->getMessage();
     }
+    $this->get('flash')->addMessage('success', ' Страница успешно проверена');
     return $response->withRedirect('/urls/' . $url_id);
 });
 
@@ -90,7 +91,7 @@ $app->get('/urls', function ($request, $response, $args) {
     try {
         $pdo =Connection::get()->connect();
         $newSelect = new Select($pdo);
-        $select = $newSelect->select();
+        $select = $newSelect->selectSql("SELECT * FROM urls ORDER BY id DESC");
     } catch (\PDOException $e) {
         echo $e->getMessage();
     }
@@ -115,8 +116,8 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
     try {
         $pdo =Connection::get()->connect();
         $newSelect = new Select($pdo);
-        $select = $newSelect->selectId($id);
-        $select2 = $newSelect->selectId2($id);
+        $select = $newSelect->selectSql("SELECT * FROM urls WHERE id = {$id}");
+        $select2 = $newSelect->selectSql("SELECT * FROM url_checks WHERE url_id = {$id}");
     } catch (\PDOException $e) {
         echo $e->getMessage();
     }

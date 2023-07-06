@@ -44,20 +44,4 @@ class Select
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
-
-    public function selectId($id)
-    {
-        $sql = "SELECT * FROM urls WHERE id = $id";
-        $stmt = $this->pdo->query($sql);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function selectId2($id)
-    {
-        $sql = "SELECT * FROM url_checks WHERE url_id = $id";
-        $stmt = $this->pdo->query($sql);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
 }
