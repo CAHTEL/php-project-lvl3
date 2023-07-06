@@ -49,9 +49,11 @@ $app->post('/urls', function ($request, $response, $args) {
         try {
             $pdo =Connection::get()->connect();
             $newSelect = new Select($pdo);
-            $select = $newSelect->selectSql("SELECT * FROM urls WHERE name = {$normalUrl} LIMIT 1");
-            var_dump($select);
-            exit;
+            $select = $newSelect->select($normalUrl);
+            if($select) {
+                $this->get('flash')->addMessage('success', 'Страница уже существует');
+                return $response->withRedirect('/urls/' . $select[0]['id']);
+            }
             $newInsert = new Insert($pdo);
             $insert = $newInsert->insertLabel($normalUrl, $time);
         } catch (\PDOException $e) {

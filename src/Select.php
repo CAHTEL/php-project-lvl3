@@ -11,10 +11,11 @@ class Select
         $this->pdo = $pdo;
     }
 
-    public function select()
+    public function select($url)
     {
-        $sql = "SELECT * FROM urls ORDER BY id DESC";
-        $stmt = $this->pdo->query($sql);
+        $sql = "SELECT * FROM urls WHERE name = ? LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$url]);
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
