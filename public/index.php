@@ -53,7 +53,7 @@ $app->post('/urls', function ($request, $response, $args) {
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
-        $this->get('flash')->addMessage('success', ' Страница успешно добавлена');
+        $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
         return $response->withRedirect('/urls/' . $insert);
     }
     $this->get('flash')->addMessage('error', 'Некорректный URL');
