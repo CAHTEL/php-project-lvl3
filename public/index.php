@@ -83,7 +83,7 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) {
     } catch (\PDOException $e) {
         echo $e->getMessage();
     }
-    $this->get('flash')->addMessage('success', ' Страница успешно проверена');
+    $this->get('flash')->addMessage('success', 'Страница успешно проверена');
     return $response->withRedirect('/urls/' . $url_id);
 });
 
