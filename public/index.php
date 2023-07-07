@@ -39,9 +39,9 @@ $app->get('/', function ($request, $response, $args) {
 
 $app->post('/urls', function ($request, $response, $args) {
     $url = $request->getParsedBodyParam('url')['name'];
-    $v = new Valitron\Validator(array('name' => $url));
-    $v->rule('required', 'name');
-    $v->rule('url', 'name');
+    $v = new Valitron\Validator(array('URL' => $url));
+    $v->rule('required', 'URL')->message('{field} не должен быть пустым');
+    $v->rule('url', 'URL')->message('Некорректный {field}');
     if($v->validate()) {
         $time = Carbon::now();
         $parseUrl = parse_url($url);
@@ -62,9 +62,7 @@ $app->post('/urls', function ($request, $response, $args) {
         $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
         return $response->withRedirect('/urls/' . $insert);
     }
-    $this->get('flash')->addMessage('error', 'Некорректный URL');
-    $messages = $this->get('flash')->getMessages();
-    $params = ['url' => $url, 'flash' => $messages];
+    $params = ['url' => $url, 'flash' => $v->errors()];
     return $this->get('renderer')->render($response, 'index.html', $params);
 });
 

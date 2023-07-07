@@ -51,11 +51,16 @@
             >
             <?php if (count($flash) > 0) : ?>
       <?php foreach ($flash as $messages) : ?>
-          <?php foreach ($messages as $message) : ?>
+      <?php if (count($messages) === 1) : ?>
           <div class="invalid-feedback">
-              <?= $message ?>
+              <?= $messages[0] ?>
             </div>
-          <?php endforeach ?>
+            <?php endif ?>
+            <?php if (count($messages) === 2) : ?>
+          <div class="invalid-feedback">
+              <?= $messages[0] ?>
+            </div>
+            <?php endif ?>
       <?php endforeach ?>
   <?php endif ?>
                         </div>
