@@ -111,7 +111,6 @@ $app->get('/urls', function ($request, $response, $args) {
             $res[] = ['id' => $sel['id'], 'name' => $sel['name'], 'created_at' => '', 'status_code' => ''];
         }
     }
-
     $params = ['urls' => $res];
     return $this->get('renderer')->render($response, 'show.html', $params);
 });
