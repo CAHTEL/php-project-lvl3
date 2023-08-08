@@ -18,6 +18,7 @@ use Illuminate\Support\Arr;
 use DiDom\Document;
 use DiDom\Query;
 
+
 session_start();
 
 $container = new Container();
