@@ -62,7 +62,7 @@ $app->post('/urls', function ($request, $response, $args) {
             echo $e->getMessage();
         }
         $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
-        return $response->withRedirect($redirect);
+        return $response->withRedirect((string) $redirect);
     }
     $params = ['url' => $url, 'flash' => $v->errors()];
     return $this->get('renderer')->render($response, 'index.html', $params);
@@ -130,7 +130,6 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
         echo $e->getMessage();
     }
     $messages = $this->get('flash')->getMessages();
-    var_dump($messages);
     $params = ['url' => $select[0], 'flash' => $messages, 'url_checks' => $select2];
     return $this->get('renderer')->render($response, 'check.html', $params);
 });
