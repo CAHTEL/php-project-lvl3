@@ -70,24 +70,24 @@ $app->post('/urls', function ($request, $response, $args) {
 $app->post('/urls/{url_id}/checks', function ($request, $response, $args) {
     $url_id = $args['url_id'];
     $time = Carbon::now();
-    try {
         $pdo =Connection::get()->connect();
         $selectId = new Select($pdo);
         $url = $selectId->selectSql("SELECT * FROM urls WHERE id = {$url_id}")[0];
+        try {
         $document = new Document($url['name'], true);
         $h1 = optional($document->first('h1'))->text();
         $title = optional($document->first('title'))->text();
         $description = optional($document->first('meta[name=description]'))->getAttribute('content');
-        $client = new Client();
-        $res = $client->request('GET', $url['name'], [
-        'auth' => ['user', 'pass']
-        ]);
+        $client = new Client(['timeout'  => 2.0,]);
+        $res = $client->get($url['name']);
+        } catch(\Throwable $e) {
+            $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
+            return $response->withRedirect('/urls/' . $url_id);
+        }
         $statusCode = $res->getStatusCode();
         $newInsert = new Insert($pdo);
         $insert = $newInsert->insertLabel2($url_id, $statusCode, $h1, $title, $description, $time);
-    } catch (\PDOException $e) {
-        echo $e->getMessage();
-    }
+    
     $this->get('flash')->addMessage('success', 'Страница успешно проверена');
     return $response->withRedirect('/urls/' . $url_id);
 });

@@ -32,13 +32,24 @@
 
     
       <?php if (count($flash) > 0) : ?>
+      <?php if (array_key_exists('success', $flash)) : ?>
       <?php foreach ($flash as $messages) : ?>
-          <?php foreach ($messages as $message) : ?>
+      <?php foreach ($messages as $message) : ?>
           <div class="alert alert-success" role="alert">
               <?= $message ?>
             </div>
-          <?php endforeach ?>
+            <?php endforeach ?>
       <?php endforeach ?>
+      <?php endif ?>
+      <?php if (array_key_exists('error', $flash)) : ?>
+      <?php foreach ($flash as $messages) : ?>
+      <?php foreach ($messages as $message) : ?>
+          <div class="alert alert-danger" role="alert">
+              <?= $message ?>
+            </div>
+            <?php endforeach ?>
+      <?php endforeach ?>
+      <?php endif ?>
   <?php endif ?>
   
 
