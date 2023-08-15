@@ -57,8 +57,7 @@ $app->post('/urls', function ($request, $response, $args) {
             }
             $newInsert = new Insert($pdo);
             $insert = $newInsert->insertLabel($normalUrl, $time);
-            var_dump($insert);
-        $redirect = "/urls/{$insert}";
+            $redirect = "/urls/{$insert}";
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
@@ -80,7 +79,10 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) {
         $h1 = optional($document->first('h1'))->text();
         $title = optional($document->first('title'))->text();
         $description = optional($document->first('meta[name=description]'))->getAttribute('content');
-        $client = new Client(['timeout'  => 2.0,]);
+        $client = new Client(['base_uri' => $url['name'],
+            'timeout'  => 3.0,
+        ]);
+        $client->request('GET', '',  ['connect_timeout' => 3.14]);
         $res = $client->get($url['name']);
         } catch(\Throwable $e) {
             $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
