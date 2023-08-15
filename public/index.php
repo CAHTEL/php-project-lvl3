@@ -57,11 +57,13 @@ $app->post('/urls', function ($request, $response, $args) {
             }
             $newInsert = new Insert($pdo);
             $insert = $newInsert->insertLabel($normalUrl, $time);
+            var_dump($insert);
+        $redirect = "/urls/{$insert}";
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
         $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
-        return $response->withRedirect('/urls/' . $insert);
+        return $response->withRedirect($redirect);
     }
     $params = ['url' => $url, 'flash' => $v->errors()];
     return $this->get('renderer')->render($response, 'index.html', $params);
