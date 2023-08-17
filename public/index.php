@@ -107,19 +107,23 @@ $app->get('/urls', function ($request, $response, $args) {
     } catch (\PDOException $e) {
         echo $e->getMessage();
     }
-    $res = [];
-    foreach ($select as $sel) {
-        $s = $newSelect->selectSql("select * from url_checks where url_id
-        = {$sel['id']} order by created_at desc limit 1");
-        if (count($s) > 0) {
-            $res[] = ['id' => $sel['id'], 'name' => $sel['name'],
-            'created_at' => $s[0]['created_at'], 'status_code' => $s[0]['status_code']];
-        } else {
-            $res[] = ['id' => $sel['id'], 'name' => $sel['name'], 'created_at' => '', 'status_code' => ''];
+    if (isset($select)) {
+        $res = [];
+        foreach ($select as $sel) {
+            $s = $newSelect->selectSql("select * from url_checks where url_id
+            = {$sel['id']} order by created_at desc limit 1");
+            if (count($s) > 0) {
+                    $res[] = ['id' => $sel['id'], 'name' => $sel['name'],
+                    'created_at' => $s[0]['created_at'], 'status_code' => $s[0]['status_code']];
+            } else {
+                    $res[] = ['id' => $sel['id'], 'name' => $sel['name'], 'created_at' => '', 'status_code' => ''];
+            }
         }
+        $params = ['urls' => $res];
+        return $this->get('renderer')->render($response, 'show.html', $params);
+    } else {
+        echo 'Ошибка';
     }
-    $params = ['urls' => $res];
-    return $this->get('renderer')->render($response, 'show.html', $params);
 });
 
 
