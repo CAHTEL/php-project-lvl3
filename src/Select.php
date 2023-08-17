@@ -18,7 +18,6 @@ class Select
         $stmt->execute([$url]);
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
     }
 
     public function selectSql($sql)
@@ -26,7 +25,6 @@ class Select
         $stmt = $this->pdo->query($sql);
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
     }
 
     public function selectChecks()
@@ -35,7 +33,6 @@ class Select
         $stmt = $this->pdo->query($sql);
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
     }
 
     public function selectTime($time)

@@ -20,7 +20,6 @@ final class Connection
      */
     public function connect()
     {
-        
         $databaseUrl = parse_url(getenv('DATABASE_URL'));
         $username = $databaseUrl['user']; // janedoe
         $password = $databaseUrl['pass']; // mypassword
@@ -56,6 +55,5 @@ final class Connection
 
     protected function __construct()
     {
-
     }
 }

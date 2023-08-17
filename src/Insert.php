@@ -26,8 +26,8 @@ class Insert
 
     public function insertLabel2(string $url_id, $status_code, $h1, $title, $description, string $created_at)
     {
-        // подготовка запроса для добавления данных
-        $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES(:url_id, :status_code, :h1, :title, :description, :created_at)";
+        $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES(:url_id,
+        :status_code, :h1, :title, :description, :created_at)";
             $stmt = $this->pdo->prepare($sql);
 
             $stmt->bindValue(':url_id', $url_id);
@@ -37,10 +37,6 @@ class Insert
             $stmt->bindValue(':description', $description);
             $stmt->bindValue(':created_at', $created_at);
             $stmt->execute();
-
-        // возврат полученного значения id
-        return $this->pdo->lastInsertId();
+            return $this->pdo->lastInsertId();
     }
-
-    
 }
