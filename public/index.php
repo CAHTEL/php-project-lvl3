@@ -61,8 +61,12 @@ $app->post('/urls', function ($request, $response, $args) {
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
-        $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
-        return $response->withRedirect((string) $redirect);
+        if (isset($redirect)) {
+            $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
+            return $response->withRedirect($redirect);
+        } else {
+            return $response->withRedirect('/');
+        }
     }
     $params = ['url' => $url, 'flash' => $v->errors()];
     return $this->get('renderer')->render($response->withStatus(422), 'index.html', $params);
