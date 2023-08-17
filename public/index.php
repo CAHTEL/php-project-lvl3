@@ -65,7 +65,7 @@ $app->post('/urls', function ($request, $response, $args) {
         return $response->withRedirect((string) $redirect);
     }
     $params = ['url' => $url, 'flash' => $v->errors()];
-    return $this->get('renderer')->render($response, 'index.html', $params);
+    return $this->get('renderer')->render($response->withStatus(422), 'index.html', $params);
 });
 
 $app->post('/urls/{url_id}/checks', function ($request, $response, $args) {
