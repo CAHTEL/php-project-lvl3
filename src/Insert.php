@@ -24,7 +24,7 @@ class Insert
         return $this->pdo->lastInsertId();
     }
 
-    public function insertLabel2(string $url_id, $status_code, $h1, $title, $description, string $created_at)
+    public function insertLabel2(string $url_id, string $status_code, string $h1, string $title, string $description, string $created_at)
     {
         $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES(:url_id,
         :status_code, :h1, :title, :description, :created_at)";

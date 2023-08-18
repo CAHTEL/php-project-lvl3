@@ -11,7 +11,7 @@ class Select
         $this->pdo = $pdo;
     }
 
-    public function select($url)
+    public function select(string $url)
     {
         $sql = "SELECT * FROM urls WHERE name = ? LIMIT 1";
         $stmt = $this->pdo->prepare($sql);
@@ -20,7 +20,7 @@ class Select
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function selectSql($sql)
+    public function selectSql(string $sql)
     {
         $stmt = $this->pdo->query($sql);
 
@@ -35,7 +35,7 @@ class Select
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function selectTime($time)
+    public function selectTime(string $time)
     {
         $sql = "SELECT * FROM urls WHERE created_at = '$time'";
         $stmt = $this->pdo->query($sql);
