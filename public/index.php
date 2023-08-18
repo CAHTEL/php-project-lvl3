@@ -107,7 +107,7 @@ $app->get('/urls', function ($request, $response, $args) {
     } catch (\PDOException $e) {
         echo $e->getMessage();
     }
-    if (isset($select)) {
+    if (isset($select) && isset($newSelect)) {
         $res = [];
         foreach ($select as $sel) {
             $s = $newSelect->selectSql("select * from url_checks where url_id
@@ -137,9 +137,12 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
     } catch (\PDOException $e) {
         echo $e->getMessage();
     }
-    $messages = $this->get('flash')->getMessages();
-    $params = ['url' => $select[0], 'flash' => $messages, 'url_checks' => $select2];
-    return $this->get('renderer')->render($response, 'check.html', $params);
+    if (isset($select) && isset($select2)) {
+        $messages = $this->get('flash')->getMessages();
+        $params = ['url' => $select[0], 'flash' => $messages, 'url_checks' => $select2];
+        return $this->get('renderer')->render($response, 'check.html', $params);
+    } else {
+        echo 'Error';
+    }
 });
-
 $app->run();
