@@ -1,4 +1,4 @@
-ame: linter-check
+name: linter-check
 on: push
 jobs:
   build:
