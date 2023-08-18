@@ -1,14 +1,11 @@
 ame: linter-check
 on: push
 jobs:
-  create:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      
-      - name: Install project
+      - uses: actions/checkout@v3
+      - name: install
         run: make install
-
-      - name: Run linter check
+      - name: lint
         run: make lint
