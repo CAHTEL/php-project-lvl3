@@ -24,18 +24,18 @@ class Insert
         return $this->pdo->lastInsertId();
     }
 
-    public function insertLabel2($url_id, $status_code, $h1, $title, $description, $created_at)
+    public function insertLabel2(mixed $url, mixed $s_code, mixed $h1, mixed $tit, mixed $desc, mixed $cr_at)
     {
-        $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES(:url_id,
-        :status_code, :h1, :title, :description, :created_at)";
+        $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES(:url,
+        :s_code, :h1, :tit, :desc, :cr_at)";
             $stmt = $this->pdo->prepare($sql);
 
-            $stmt->bindValue(':url_id', $url_id);
-            $stmt->bindValue(':status_code', $status_code);
+            $stmt->bindValue(':url', $url);
+            $stmt->bindValue(':s_code', $s_code);
             $stmt->bindValue(':h1', $h1);
-            $stmt->bindValue(':title', $title);
-            $stmt->bindValue(':description', $description);
-            $stmt->bindValue(':created_at', $created_at);
+            $stmt->bindValue(':tit', $tit);
+            $stmt->bindValue(':desc', $desc);
+            $stmt->bindValue(':cr_at', $cr_at);
             $stmt->execute();
             return $this->pdo->lastInsertId();
     }
