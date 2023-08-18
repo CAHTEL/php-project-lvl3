@@ -7,5 +7,3 @@ lint:
 	composer exec --verbose phpcs -- --standard=PSR12 src public
 test:
 	composer exec --verbose phpunit tests
-db:
-	sudo -u postgres createdb php_project_lvl3
