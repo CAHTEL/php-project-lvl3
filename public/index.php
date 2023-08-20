@@ -48,15 +48,15 @@ $app->post('/urls', function ($request, $response, $args) {
         $normalUrl = implode('', [$parseUrl['scheme'], '://', $parseUrl['host']]);
         try {
             $pdo = Connection::get()->connect();
-            $newSelect = new Select($pdo);
-            $select = $newSelect->selectSql("SELECT * FROM urls WHERE name = ? LIMIT 1", [$normalUrl]);
-            if ($select) {
+            $select = new Select($pdo);
+            $urlInTable = $select->selectSql("SELECT * FROM urls WHERE name = ? LIMIT 1", [$normalUrl]);
+            if ($urlInTable) {
                 $this->get('flash')->addMessage('success', 'Страница уже существует');
-                return $response->withRedirect('/urls/' . $select[0]['id']);
+                return $response->withRedirect('/urls/' . $urlInTable[0]['id']);
             }
-            $newInsert = new Insert($pdo);
-            $insert = $newInsert->insertSql("INSERT INTO urls (name, created_at) VALUES(?, ?)", [$normalUrl, $time]);
-            $redirect = "/urls/{$insert}";
+            $insert = new Insert($pdo);
+            $id = $insert->insertSql("INSERT INTO urls (name, created_at) VALUES(?, ?)", [$normalUrl, $time]);
+            $redirect = "/urls/{$id}";
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
@@ -92,10 +92,10 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) {
             return $response->withRedirect('/urls/' . $url_id);
     }
         $statusCode = $res->getStatusCode();
-        $newInsert = new Insert($pdo);
+        $insert = new Insert($pdo);
         $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at)
         VALUES(?, ?, ?, ?, ?, ?)";
-        $insert = $newInsert->insertSql($sql, [$url_id, $statusCode, $h1, $title, $description, $time]);
+        $insertInTable = $insert->insertSql($sql, [$url_id, $statusCode, $h1, $title, $description, $time]);
         $this->get('flash')->addMessage('success', 'Страница успешно проверена');
         return $response->withRedirect('/urls/' . $url_id);
 });
@@ -131,15 +131,15 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
     $id = $args['id'];
     try {
         $pdo = Connection::get()->connect();
-        $newSelect = new Select($pdo);
-        $select = $newSelect->selectSql("SELECT * FROM urls WHERE id = {$id}");
-        $select2 = $newSelect->selectSql("SELECT * FROM url_checks WHERE url_id = {$id}");
+        $select = new Select($pdo);
+        $url = $select->selectSql("SELECT * FROM urls WHERE id = {$id}");
+        $checks = $select->selectSql("SELECT * FROM url_checks WHERE url_id = {$id}");
     } catch (\PDOException $e) {
         echo $e->getMessage();
     }
-    if (isset($select) && isset($select2)) {
+    if (isset($url) && isset($checks)) {
         $messages = $this->get('flash')->getMessages();
-        $params = ['url' => $select[0], 'flash' => $messages, 'url_checks' => $select2];
+        $params = ['url' => $url[0], 'flash' => $messages, 'url_checks' => $checks];
         return $this->get('renderer')->render($response, 'check.html', $params);
     } else {
         echo 'Error';
