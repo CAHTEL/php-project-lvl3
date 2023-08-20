@@ -18,7 +18,6 @@ use Illuminate\Support\Arr;
 use DiDom\Document;
 use DiDom\Query;
 
-
 session_start();
 
 $container = new Container();
@@ -32,31 +31,31 @@ $container->set('flash', function () {
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
-
 $app->get('/', function ($request, $response, $args) {
     $params = ['url' => '', 'flash' => []];
+    $databaseUrl = parse_url($_ENV['DATABASE_URL']);
     return $this->get('renderer')->render($response, 'index.html', $params);
 });
 
 $app->post('/urls', function ($request, $response, $args) {
     $url = $request->getParsedBodyParam('url')['name'];
-    $v = new Valitron\Validator(array('URL' => $url));
-    $v->rule('required', 'URL')->message('{field} не должен быть пустым');
-    $v->rule('url', 'URL')->message('Некорректный {field}');
-    if ($v->validate()) {
+    $validator = new Valitron\Validator(array('URL' => $url));
+    $validator->rule('required', 'URL')->message('{field} не должен быть пустым');
+    $validator->rule('url', 'URL')->message('Некорректный {field}');
+    if ($validator->validate()) {
         $time = Carbon::now();
         $parseUrl = parse_url($url);
         $normalUrl = implode('', [$parseUrl['scheme'], '://', $parseUrl['host']]);
         try {
             $pdo = Connection::get()->connect();
             $newSelect = new Select($pdo);
-            $select = $newSelect->select($normalUrl);
+            $select = $newSelect->selectSql("SELECT * FROM urls WHERE name = ? LIMIT 1", [$normalUrl]);
             if ($select) {
                 $this->get('flash')->addMessage('success', 'Страница уже существует');
                 return $response->withRedirect('/urls/' . $select[0]['id']);
             }
             $newInsert = new Insert($pdo);
-            $insert = $newInsert->insertLabel($normalUrl, $time);
+            $insert = $newInsert->insertSql("INSERT INTO urls (name, created_at) VALUES(?, ?)", [$normalUrl, $time]);
             $redirect = "/urls/{$insert}";
         } catch (\PDOException $e) {
             echo $e->getMessage();
@@ -68,7 +67,7 @@ $app->post('/urls', function ($request, $response, $args) {
             return $response->withRedirect('/');
         }
     }
-    $params = ['url' => $url, 'flash' => $v->errors()];
+    $params = ['url' => $url, 'flash' => $validator->errors()];
     return $this->get('renderer')->render($response->withStatus(422), 'index.html', $params);
 });
 
@@ -94,7 +93,9 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) {
     }
         $statusCode = $res->getStatusCode();
         $newInsert = new Insert($pdo);
-        $insert = $newInsert->insertLabel2($url_id, $statusCode, $h1, $title, $description, $time);
+        $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at)
+        VALUES(?, ?, ?, ?, ?, ?)";
+        $insert = $newInsert->insertSql($sql, [$url_id, $statusCode, $h1, $title, $description, $time]);
         $this->get('flash')->addMessage('success', 'Страница успешно проверена');
         return $response->withRedirect('/urls/' . $url_id);
 });
@@ -126,7 +127,6 @@ $app->get('/urls', function ($request, $response, $args) {
     }
 });
 
-
 $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
     $id = $args['id'];
     try {
@@ -145,4 +145,5 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
         echo 'Error';
     }
 });
+
 $app->run();

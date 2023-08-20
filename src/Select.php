@@ -11,35 +11,15 @@ class Select
         $this->pdo = $pdo;
     }
 
-    public function select(string $url)
+    public function selectSql(string $sql, array $val = null)
     {
-        $sql = "SELECT * FROM urls WHERE name = ? LIMIT 1";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$url]);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function selectSql(string $sql)
-    {
-        $stmt = $this->pdo->query($sql);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function selectChecks()
-    {
-        $sql = "SELECT * FROM url_checks";
-        $stmt = $this->pdo->query($sql);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function selectTime(string $time)
-    {
-        $sql = "SELECT * FROM urls WHERE created_at = '$time'";
-        $stmt = $this->pdo->query($sql);
-
+        if ($val !== null) {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($val);
+        } else {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+        }
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

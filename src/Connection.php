@@ -2,31 +2,19 @@
 
 namespace Hexlet\Code;
 
-/**
- * Создание класса Connection
- */
-final class Connection
+class Connection
 {
-    /**
-     * Connection
-     * тип @var
-     */
     private static ?Connection $conn = null;
 
-    /**
-     * Подключение к базе данных и возврат экземпляра объекта \PDO
-     * @return \PDO
-     * @throws \Exception
-     */
     public function connect()
     {
         $string = getenv('DATABASE_URL');
         $databaseUrl = parse_url((string) $string);
-        $username = $databaseUrl['user']; // janedoe
-        $password = $databaseUrl['pass']; // mypassword
-        $host = $databaseUrl['host']; // localhost
-        $port = $databaseUrl['port']; // 5432
-        $dbName = ltrim($databaseUrl['path'], '/'); // mydb
+        $username = $databaseUrl['user'];
+        $password = $databaseUrl['pass'];
+        $host = $databaseUrl['host'];
+        $port = $databaseUrl['port'];
+        $dbName = ltrim($databaseUrl['path'], '/');
         $conStr = sprintf(
             "pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s",
             $host,
@@ -41,10 +29,6 @@ final class Connection
         return $pdo;
     }
 
-    /**
-     * возврат экземпляра объекта Connection
-     * тип @return
-     */
     public static function get()
     {
         if (null === static::$conn) {
@@ -52,9 +36,5 @@ final class Connection
         }
 
         return static::$conn;
-    }
-
-    protected function __construct()
-    {
     }
 }
